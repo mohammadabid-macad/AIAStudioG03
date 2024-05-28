@@ -1,0 +1,60 @@
+Material,"Energy
+MJ/kg","Carbon
+kg CO2/kg","Density
+kg /m3"
+Concrete ,0.88,0.101,
+Bricks (common),3,0.24,1700
+Concrete block (Medium density 10 N/mm2)),0.67,0.073,1450
+Aerated block,3.5,0.3,750
+Timber (general - excludes sequestration),10,0.72,480 - 720
+Limestone block,0.85,,2180
+Marble,2,0.116,2500
+Plasterboard,6.75,0.38,800
+Plaster,1.8,0.12,1120
+Glass,15,0.85,2500
+Glue laminated timber,12,0.87,
+Clay tile,6.5,0.45,1900
+Sawn hardwood,10.4,0.86,700 - 800
+Cellular glass insulation,27,,
+Cellulose insulation (loose fill),0.94 – 3.3,,43
+Cork insulation,26.00*,,160
+Glass fibre insulation (glass wool),28,1.35,12
+Flax insulation,39.5,1.7,30*
+Rockwool (slab),16.8,1.05,24
+Expanded Polystyrene insulation,88.6,2.55,15 – 30*
+Polyurethane insulation (rigid foam),101.5,3.48,30
+Woodwool board insulation,20,0.98,
+Wool (recycled) insulation,20.9,,25*
+Straw bale,0.91,,100 – 110*
+Mineral fibre roofing tile,37,2.7,1850*
+Slate (UK – imported),0.1 – 1.0,0.006 – 0.058,1600
+Aluminium (general & incl 33% recycled),155,8.24,2700
+Bitumen (general),51,0.38 - 0.43,
+Hardboard,16,1.05,600 - 1000
+MDF,11,0.72,680 – 760*
+OSB,15,0.96,640*
+Plywood,15,1.07,540 - 700
+PVC (general),77.2,28.1,1380
+PVC pipe,67.5,24.4,1400*
+Linoleum,25,1.21,1200
+Vinyl flooring,65.64,2.92,1200
+Terrazzo tiles,1.4,0.12,1750*
+Ceramic tiles,12,0.74,2000
+"Carpet tiles, nylon (Polyamide), pile weight 770g/m2",279 MJ/m2,13.7 / m2,4.6 kg/m2
+Wool carpet,106,5.53,
+Wallpaper,36.4,1.93,
+Wood stain / varnish,50,5.35,
+Vitrified clay pipe (DN 500),7.9,0.52,
+Iron (general ),25,1.91,7870
+Copper (average incl. 37% recycled),42,2.6,8600
+Lead (incl 61% recycled),25.21,1.57,11340
+Ceramic sanitary ware,29,1.51,
+Aggregate,0.083,0.0048,2240
+"Concrete (1:1.5:3 eg in-situ floor slabs, structure)",1.11,0.159,2400
+Concrete (eg in-situ floor slabs) with 25% PFA RC40,0.97,0.132,
+Rammed earth (no cement content),0.45,0.023,1460
+Cement mortar (1:3),1.33,0.208,
+Steel (general - average recycled content),20.1,1.37,7800
+Steel (section - average recycled content),21.5,1.42,7800
+Steel (pipe - average recycled content),19.8,1.37,7800
+Stainless steel,56.7,6.15,7850
