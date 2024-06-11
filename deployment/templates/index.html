@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Material Estimation</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<style>
+    #map { height: 300px; width: 100%; }
+</style>
+</head>
+<body>
+    <h1>Material Estimation from Images</h1>
+    <div id="map"></div>
+    <input type="text" id="coordinates" placeholder="Click on map to get coordinates">
+    <input type="file" id="imageInput" accept="image/*">
+    <button onclick="submitData()">Submit</button>
+    <div id="results"></div>
+
+    <script>
+        var map = L.map('map').setView([51.505, -0.09], 13);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap'
+        }).addTo(map);
+
+        var marker;
+
+        map.on('click', function(e) {
+            var coord = e.latlng.toString().split(',');
+            var lat = coord[0].split('(');
+            var lng = coord[1].split(')');
+            document.getElementById('coordinates').value = lat[1] + ", " + lng[0];
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = new L.Marker(e.latln).addTo(map);
+        });
+
+        function submitData() {
+            const imageFile = document.getElementById('imageInput').files[0];
+            const formData = new FormData();
+            formData.append('file', imageFile);
+
+            fetch('/upload_image', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('results').innerHTML = JSON.stringify(data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
