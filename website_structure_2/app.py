@@ -1,11 +1,12 @@
 from flask import Flask, request, render_template, jsonify
-#from segmentation_model.py import run_segmentation_model
-from second_model import run_second_model
 import os
-from PIL import Image
-import io
+import facade_calc_part_b as fcpb
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = 'uploads'
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 @app.route('/')
 def index():
@@ -14,29 +15,23 @@ def index():
 @app.route('/upload_image', methods=['POST'])
 def handle_image_upload():
     image = request.files['file']
-    image_path = os.path.join('uploads', image.filename)
-    image.save(image_path)
+    lat = request.form.get('lat')
+    lon = request.form.get('lon')
+    if image:
+        image_path = os.path.join(UPLOAD_FOLDER, image.filename)
+        image.save(image_path)
 
-    #segmented_image, segmentation_results = run_segmentation_model(image_path)
+        # Get building info using lat and lon
+        building_info = fcpb.get_building_info(float(lat), float(lon))
 
-    # Save segmented image
-   # segmented_image_path = os.path.join('uploads', 'segmented_' + image.filename)
-   # Image.fromarray(segmented_image).save(segmented_image_path)
-
-    #return jsonify({
-    #    "segmented_image_path": segmented_image_path,
-    #    "segmentation_results": segmentation_results
-   # })
-
-@app.route('/analyze_location', methods=['POST'])
-def analyze_location():
-    data = request.json
-    lat = data['lat']
-    lon = data['lon']
-    segmentation_results = data['segmentation_results']
-
-    analysis_results = run_second_model(lat, lon, segmentation_results)
-    return jsonify(analysis_results)
+        # Return a simple test message with building info
+        return jsonify({
+            "message": "Image received successfully!",
+            "image_path": image_path,
+            "building_info": building_info
+        })
+    else:
+        return jsonify({"message": "No image uploaded"}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    app.run(debug=True)

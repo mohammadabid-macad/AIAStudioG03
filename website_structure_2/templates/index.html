@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Material Estimation</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-<link rel="stylesheet" href=".css">
-<style>
-    #map { height: 100vh; width: 30%; float: left; }
-    #main-content { width: 70%; float: left; padding: 10px; height: 100vh; box-sizing: border-box; position: relative; }
-    #results { position: absolute; bottom: 10px; right: 10px; width: 50%; }
-    #results img { width: 100%; height: auto; }
-</style>
+    <meta charset="UTF-8">
+    <title>Material Estimation from Images</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <style>
+        #map { height: 100vh; width: 30%; float: left; }
+        #main-content { width: 70%; float: left; padding: 10px; height: 100vh; box-sizing: border-box; position: relative; }
+        #results { position: absolute; bottom: 10px; right: 10px; width: 50%; }
+        #results img { width: 100%; height: auto; }
+    </style>
 </head>
 <body>
     <div id="map"></div>
@@ -35,10 +34,8 @@
         var marker;
 
         map.on('click', function(e) {
-            var coord = e.latlng.toString().split(',');
-            var lat = coord[0].split('(');
-            var lng = coord[1].split(')');
-            document.getElementById('coordinates').value = lat[1] + ", " + lng[0];
+            var latlng = e.latlng.lat + ", " + e.latlng.lng;
+            document.getElementById('coordinates').value = latlng;
             if (marker) {
                 map.removeLayer(marker);
             }
@@ -49,21 +46,45 @@
 
         function submitData() {
             const imageFile = document.getElementById('imageInput').files[0];
+            const coordinates = document.getElementById('coordinates').value.split(", ");
+            const lat = coordinates[0];
+            const lon = coordinates[1];
             const formData = new FormData();
             formData.append('file', imageFile);
+            formData.append('lat', lat);
+            formData.append('lon', lon);
 
             fetch('/upload_image', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('results').innerHTML = '';
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(imageFile);
-                document.getElementById('results').appendChild(img);
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
             })
-            .catch(error => console.error('Error:', error));
+            .then(data => {
+                document.getElementById('results').innerHTML = `<p>${data.message}</p>`;
+                if (data.image_path) {
+                    const img = document.createElement('img');
+                    img.src = data.image_path;
+                    document.getElementById('results').appendChild(img);
+                }
+                if (data.building_info) {
+                    const buildingInfo = document.createElement('div');
+                    buildingInfo.innerHTML = `
+                        <p>OSM ID: ${data.building_info.osm_id}</p>
+                        <p>Building Name: ${data.building_info.building_name}</p>
+                        <p>Building Category: ${data.building_info.building_category}</p>
+                    `;
+                    document.getElementById('results').appendChild(buildingInfo);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('results').innerHTML = `<p>Error: ${error.message}</p>`;
+            });
         }
     </script>
 </body>
