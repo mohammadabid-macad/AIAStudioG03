@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    display: flex;
+    height: 100vh;
+}
+
+#map {
+    width: 30%;
+    height: 100vh;
+    float: left;
+}
+
+#main-content {
+    width: 70%;
+    padding: 10px;
+    box-sizing: border-box;
+    float: left;
+    position: relative;
+}
+
+#results {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    width: 50%;
+}
+
+#results img {
+    width: 100%;
+    height: auto;
+}
