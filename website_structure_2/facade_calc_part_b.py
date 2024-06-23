@@ -24,6 +24,9 @@ def get_building_info(lat, lon):
     osm_id = str(closest_building.name)  # Ensure it's a standard string
     building_name = closest_building.get('name', 'N/A')  # Attempt to get the building name if available
 
+    # Check for building levels
+    building_levels = closest_building.get('building:levels', 'No Building levels information found on OSM')
+
     # Mapping dictionary for building categories
     building_type_mapping = {
         'house': 'residential',
@@ -106,5 +109,6 @@ def get_building_info(lat, lon):
     return {
         "osm_id": osm_id,
         "building_name": building_name,
-        "building_category": closest_building_category
+        "building_category": closest_building_category,
+        "building_levels": building_levels
     }
