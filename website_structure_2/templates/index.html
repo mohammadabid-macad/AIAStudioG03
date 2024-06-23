@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Material Estimation</title>
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-<link rel="stylesheet" href=".css">
-<style>
-    #map { height: 100vh; width: 30%; float: left; }
-    #main-content { width: 70%; float: left; padding: 10px; height: 100vh; box-sizing: border-box; position: relative; }
-    #results { position: absolute; bottom: 10px; right: 10px; width: 50%; }
-    #results img { width: 100%; height: auto; }
-</style>
+    <meta charset="UTF-8">
+    <title>Material Estimation</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <style>
+        #map { height: 100vh; width: 30%; float: left; }
+        #main-content { width: 70%; float: left; padding: 10px; height: 100vh; box-sizing: border-box; position: relative; }
+        #results { position: absolute; bottom: 10px; right: 10px; width: 50%; }
+        #results img { width: 100%; height: auto; }
+    </style>
 </head>
 <body>
     <div id="map"></div>
@@ -49,6 +48,10 @@
 
         function submitData() {
             const imageFile = document.getElementById('imageInput').files[0];
+            const coordinates = document.getElementById('coordinates').value.split(', ');
+            const lat = parseFloat(coordinates[0]);
+            const lon = parseFloat(coordinates[1]);
+
             const formData = new FormData();
             formData.append('file', imageFile);
 
@@ -58,10 +61,36 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('results').innerHTML = '';
-                const img = document.createElement('img');
-                img.src = URL.createObjectURL(imageFile);
-                document.getElementById('results').appendChild(img);
+                fetch('/analyze_location', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        lat: lat,
+                        lon: lon,
+                        segmentation_results: {}  // Placeholder for actual segmentation results
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('results').innerHTML = `
+                        <p>Building Name: ${data.closest_building.building_name}</p>
+                        <p>Building Category: ${data.closest_building.building_category}</p>
+                        <p>Building Footprint Area: ${data.closest_building.building_footprint_area} square meters</p>
+                        <p>Total Building Facade Area: ${data.closest_building.total_building_facade_area} square meters</p>
+                        <p>Brick Area: ${data.closest_building.material_areas.brick_area} square meters</p>
+                        <p>Ceramic Area: ${data.closest_building.material_areas.ceramic_area} square meters</p>
+                        <p>Glass Area: ${data.closest_building.material_areas.glass_area} square meters</p>
+                        <p>Metal Area: ${data.closest_building.material_areas.metal_area} square meters</p>
+                        <p>Paint Area: ${data.closest_building.material_areas.paint_area} square meters</p>
+                        <p>Tile Area: ${data.closest_building.material_areas.tile_area} square meters</p>
+                        <p>Wood Area: ${data.closest_building.material_areas.wood_area} square meters</p>
+                        <p>Building Height: ${data.closest_building.building_height} meters</p>
+                        <p>Building Height Source: ${data.closest_building.building_height_source}</p>
+                    `;
+                })
+                .catch(error => console.error('Error:', error));
             })
             .catch(error => console.error('Error:', error));
         }
